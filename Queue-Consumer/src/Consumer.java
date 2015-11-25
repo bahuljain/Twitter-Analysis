@@ -20,8 +20,9 @@ import com.amazonaws.util.json.JSONException;
 import com.amazonaws.util.json.JSONObject;
 
 public class Consumer {
+	private static AWSCredentials credentials = null;
+	
 	private static AmazonSQS init() {
-		AWSCredentials credentials = null;
 		try {
 			credentials = new ProfileCredentialsProvider("default").getCredentials();
 		} catch (Exception e) {
@@ -41,13 +42,25 @@ public class Consumer {
 		return sqs;
 	}
 
+	private static void deleteBatchMessages(List<Message> messages, String queueUrl, AmazonSQS sqs) {
+		// Delete a message
+		System.out.println("Deleting Messages.\n");
+
+		List<DeleteMessageBatchRequestEntry> entries = new ArrayList<DeleteMessageBatchRequestEntry>();
+		for (Message m : messages) {
+			entries.add(new DeleteMessageBatchRequestEntry(m.getMessageId(), m.getReceiptHandle()));
+		}
+		DeleteMessageBatchRequest deleteMessageBatchRequest = new DeleteMessageBatchRequest(queueUrl, entries);
+		sqs.deleteMessageBatch(deleteMessageBatchRequest);
+	}
+	
 	private static void processQueueMessages(AmazonSQS sqs) {
 		// TODO Auto-generated method stub
 		String queueName = "bahul";
 		String queueUrl = sqs.getQueueUrl(queueName).getQueueUrl();
 
 		// Receive messages
-		int maxMessages = 10;
+		int maxMessages = 2;
 
 		while (true) {
 			System.out.println("Receiving messages from MyQueue.\n");
@@ -56,19 +69,18 @@ public class Consumer {
 			List<Message> messages = sqs.receiveMessage(receiveMessageRequest).getMessages();
 
 			if (messages.size() > 0) {
-
 				ExecutorService executor = Executors.newFixedThreadPool(10);
 				for (Message message : messages) {
-					JSONObject body;
 					try {
-						body = new JSONObject(message.getBody());
-						Runnable worker = new WorkerThread(body);
+						JSONObject body = new JSONObject(message.getBody());
+						Runnable worker = new WorkerThread(credentials, body);
 						executor.execute(worker);
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
+				
 				try {
 					System.out.println("Attempting to shut down worker now!!");
 					executor.shutdown();
@@ -81,11 +93,11 @@ public class Consumer {
 					}
 					executor.shutdownNow();
 				}
-
+				
 				// deleteBatchMessages(messages, queueUrl, sqs);
 
 				System.out.println("Processed All Messages");
-
+				break;
 			} else {
 				System.out.println("chilling!!....");
 				try {
@@ -95,18 +107,6 @@ public class Consumer {
 				}
 			}
 		}
-	}
-
-	private static void deleteBatchMessages(List<Message> messages, String queueUrl, AmazonSQS sqs) {
-		// Delete a message
-		System.out.println("Deleting Messages.\n");
-
-		List<DeleteMessageBatchRequestEntry> entries = new ArrayList<DeleteMessageBatchRequestEntry>();
-		for (Message m : messages) {
-			entries.add(new DeleteMessageBatchRequestEntry(m.getMessageId(), m.getReceiptHandle()));
-		}
-		DeleteMessageBatchRequest deleteMessageBatchRequest = new DeleteMessageBatchRequest(queueUrl, entries);
-		sqs.deleteMessageBatch(deleteMessageBatchRequest);
 	}
 
 	public static void main(String[] args) throws Exception {
