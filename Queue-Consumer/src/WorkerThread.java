@@ -39,12 +39,19 @@ public class WorkerThread implements Runnable {
 		}
 	}
 
+
+	private void addToDynamo(JSONObject tweet2) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		String sentiment = getSentiment();
 		if (sentiment != null) {
 			System.out.println(this.WorkerID + ": " + sentiment);
+			addToDynamo(tweet);
 		}
 	}
 }
