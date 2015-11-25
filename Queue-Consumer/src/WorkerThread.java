@@ -38,12 +38,10 @@ public class WorkerThread implements Runnable {
 
 		Document doc;
 		try {
-			// System.out.println(this.WorkerID + ": " + tweetText);
 			doc = alchemyObj.TextGetTextSentiment(tweet.getString("text"));
 			String sentiment = doc.getElementsByTagName("type").item(0).getTextContent();
 			return sentiment;
 		} catch (XPathExpressionException | IOException | SAXException | ParserConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		} catch (Exception e) {
@@ -63,7 +61,6 @@ public class WorkerThread implements Runnable {
 	private void addToDynamo(JSONObject tweet) {
 		dynamoInit();
 		String tableName = "cloud-ass-2-test";
-    	// Create table if it does not exist yet
         if (Tables.doesTableExist(this.dynamoDB, tableName)) {
         	try {
 				addItem(tableName, tweet.getString("id"), tweet.toString());
@@ -86,14 +83,12 @@ public class WorkerThread implements Runnable {
 	
 	private Map<String, AttributeValue> newItem(String tweet_id, String tweet) {
         Map<String, AttributeValue> item = new HashMap<String, AttributeValue>();
-        //item.put("name", new AttributeValue().withN(Integer.toString(tweet_id)));
         item.put("tweet_id", new AttributeValue(tweet_id));
         item.put("tweet", new AttributeValue(tweet));
         return item;
     }
 	
 	private void dynamoInit() {
-		// TODO Auto-generated method stub
 		this.dynamoDB = new AmazonDynamoDBClient(credentials);
         Region usEast1 = Region.getRegion(Regions.US_EAST_1);
         this.dynamoDB.setRegion(usEast1);
@@ -101,8 +96,7 @@ public class WorkerThread implements Runnable {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		String sentiment = "positive";//getSentiment();
+		String sentiment = getSentiment();
 		if (sentiment != null) {
 //			System.out.println(this.WorkerID + ": " + sentiment);
 			addSentimentToTweet(sentiment);
