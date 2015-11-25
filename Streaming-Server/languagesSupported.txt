@@ -1,0 +1,8 @@
+english - en
+french - fr
+german - de
+italian - it
+portugese - pt
+spanish - es
+russian - ru
+arabic - ar
