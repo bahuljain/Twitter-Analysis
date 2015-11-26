@@ -60,7 +60,7 @@ public class Consumer {
 		String queueUrl = sqs.getQueueUrl(queueName).getQueueUrl();
 
 		// Receive messages
-		int maxMessages = 2;
+		int maxMessages = 10;
 
 		while (true) {
 			System.out.println("Receiving messages from MyQueue.\n");

@@ -16,19 +16,20 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.PutItemRequest;
 import com.amazonaws.services.dynamodbv2.util.Tables;
+import com.amazonaws.services.sns.AmazonSNSClient;
+import com.amazonaws.services.sns.model.PublishRequest;
+import com.amazonaws.services.sns.model.PublishResult;
 import com.amazonaws.util.json.JSONException;
 import com.amazonaws.util.json.JSONObject;
 
 public class WorkerThread implements Runnable {
 	private JSONObject tweet;
-	private String WorkerID;
 	private AmazonDynamoDBClient dynamoDB;
+	private AmazonSNSClient snsClient;
 	private final String apiKey = "3669370d18a4239e2d6f494a46436716db13aa1c";
-	private AWSCredentials credentials= null;
-	
+	private AWSCredentials credentials = null;
+
 	public WorkerThread(AWSCredentials credentials, JSONObject tweet) {
-		Double d = new Double(Math.random());
-		this.WorkerID = Math.abs(d.hashCode()) + "";
 		this.tweet = tweet;
 		this.credentials = credentials;
 	}
@@ -57,50 +58,63 @@ public class WorkerThread implements Runnable {
 			e.printStackTrace();
 		}
 	}
-	
+
+	private void addItem(String tablename, String id, String tweet) {
+		// Add an item
+		Map<String, AttributeValue> item = newItem(id, tweet);
+		PutItemRequest putItemRequest = new PutItemRequest(tablename, item);
+		this.dynamoDB.putItem(putItemRequest);
+		System.out.println("Item added");
+	}
+
+	private Map<String, AttributeValue> newItem(String tweet_id, String tweet) {
+		Map<String, AttributeValue> item = new HashMap<String, AttributeValue>();
+		item.put("tweet_id", new AttributeValue(tweet_id));
+		item.put("tweet", new AttributeValue(tweet));
+		return item;
+	}
+
+	private void dynamoInit() {
+		this.dynamoDB = new AmazonDynamoDBClient(this.credentials);
+		this.dynamoDB.setRegion(Region.getRegion(Regions.US_EAST_1));
+	}
+
 	private void addToDynamo(JSONObject tweet) {
 		dynamoInit();
 		String tableName = "cloud-ass-2-test";
-        if (Tables.doesTableExist(this.dynamoDB, tableName)) {
-        	try {
+		if (Tables.doesTableExist(this.dynamoDB, tableName)) {
+			try {
 				addItem(tableName, tweet.getString("id"), tweet.toString());
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-        } else {
-        	System.out.println("Table does not exist, please enter a valid table name.");
-        }
-		
+		} else {
+			System.out.println("Table does not exist, please enter a valid table name.");
+		}
+
 	}
-	
-	private void addItem(String tablename, String id, String tweet){
-    	// Add an item
-        Map<String, AttributeValue> item = newItem(id,tweet);
-        PutItemRequest putItemRequest = new PutItemRequest(tablename, item);
-        this.dynamoDB.putItem(putItemRequest);
-        System.out.println("Item added");
-    }
-	
-	private Map<String, AttributeValue> newItem(String tweet_id, String tweet) {
-        Map<String, AttributeValue> item = new HashMap<String, AttributeValue>();
-        item.put("tweet_id", new AttributeValue(tweet_id));
-        item.put("tweet", new AttributeValue(tweet));
-        return item;
-    }
-	
-	private void dynamoInit() {
-		this.dynamoDB = new AmazonDynamoDBClient(credentials);
-        Region usEast1 = Region.getRegion(Regions.US_EAST_1);
-        this.dynamoDB.setRegion(usEast1);
+
+	private void snsPublish(String msg) {
+		this.snsClient = new AmazonSNSClient(credentials);
+		this.snsClient.setRegion(Region.getRegion(Regions.US_EAST_1));
+
+		String topicArn = "arn:aws:sns:us-east-1:671774941075:Tweet-Feed";
+//		String topicArn2 = "arn:aws:sns:us-east-1:671774941075:SNSTest";
+		
+		//publish to an SNS topic
+		PublishRequest publishRequest = new PublishRequest(topicArn, msg);
+		PublishResult publishResult = snsClient.publish(publishRequest);
+		//print MessageId of message published to SNS topic
+		System.out.println("MessageId - " + publishResult.getMessageId());
 	}
 
 	@Override
 	public void run() {
 		String sentiment = getSentiment();
 		if (sentiment != null) {
-//			System.out.println(this.WorkerID + ": " + sentiment);
 			addSentimentToTweet(sentiment);
 			addToDynamo(this.tweet);
-		}
+			snsPublish(this.tweet.toString());
+		}		
 	}
 }
