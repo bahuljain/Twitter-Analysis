@@ -3,7 +3,7 @@ var AWS = require("aws-sdk");
 function load_onstart() {
 	AWS.config.update({
   		region: "us-east-1",
-  		accessKeyId: "AKIAINAD76CNJ4MC4J5A", secretAccessKey: "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"
+  		accessKeyId: "XXXXXXXXXXXXXXXXXX", secretAccessKey: "XXXXXXXXXXXXXXXXXX"
 	});
 	var dynamodb = new AWS.DynamoDB();
 	var params = {
