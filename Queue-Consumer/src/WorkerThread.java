@@ -26,7 +26,7 @@ public class WorkerThread implements Runnable {
 	private JSONObject tweet;
 	private AmazonDynamoDBClient dynamoDB;
 	private AmazonSNSClient snsClient;
-	private final String apiKey = "3669370d18a4239e2d6f494a46436716db13aa1c";
+	private final String apiKey = "add alchemy api key here";
 	private AWSCredentials credentials = null;
 
 	public WorkerThread(AWSCredentials credentials, JSONObject tweet) {
