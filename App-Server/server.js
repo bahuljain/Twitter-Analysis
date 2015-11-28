@@ -41,7 +41,7 @@ app.post('/newTweet', function (request, response) {
 function loadFromDynamo(socket) {
 	AWS.config.update({
   		region: "us-east-1",
-  		accessKeyId: "AKIAJOMJGPJBNRWN2RNQ", secretAccessKey: "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"
+  		accessKeyId: "add access key id", secretAccessKey: "add secret access key here"
 	});
 	var dynamodb = new AWS.DynamoDB();
 	var params = {
