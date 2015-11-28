@@ -99,21 +99,19 @@ public class WorkerThread implements Runnable {
 		this.snsClient.setRegion(Region.getRegion(Regions.US_EAST_1));
 
 		String topicArn = "arn:aws:sns:us-east-1:671774941075:Tweet-Feed";
-//		String topicArn2 = "arn:aws:sns:us-east-1:671774941075:SNSTest";
-		
-		//publish to an SNS topic
+	
 		PublishRequest publishRequest = new PublishRequest(topicArn, msg);
 		PublishResult publishResult = snsClient.publish(publishRequest);
-		//print MessageId of message published to SNS topic
+
 		System.out.println("MessageId - " + publishResult.getMessageId());
 	}
 
 	@Override
 	public void run() {
-		String sentiment = getSentiment();
+		String sentiment = "positive";//getSentiment();
 		if (sentiment != null) {
 			addSentimentToTweet(sentiment);
-			addToDynamo(this.tweet);
+//			addToDynamo(this.tweet);
 			snsPublish(this.tweet.toString());
 		}		
 	}
