@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+  <head>
+    <title>TweetMap!</title>
+    <meta charset="utf-8">
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+		<script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+			}
+			#map {
+				position: absolute;
+				height: 100%;
+				width:84%;
+			}
+			#sidebar {
+				position: absolute;
+				right: 0;
+				padding: 10px;
+				margin: 10px;
+				border: 0px solid #eee;
+				text-align: center;
+			}
+
+		</style>
+  </head>
+
+  <body>
+		<div id="map"></div>
+
+		<div id="sidebar">
+				<h5><u>Filter using Keyword from List</u></h5>
+					<select id='dropdown' name='keywords'>
+						<option value='all'>All</option>
+						<option value='movies'>Movies</option>
+						<option value='music'>Music</option>
+						<option value='sports'>Sports</option>
+						<option value='finance'>Finance</option>
+						<option value='technology'>Technology</option>
+						<option value='fashion'>Fashion</option>
+						<option value='science'>Science</option>
+						<option value='travel'>Travel</option>
+						<option value='health'>Health</option>
+						<option value='cricket'>Cricket</option>
+						<option value='india'>India</option>
+					</select>
+				
+				<p id="counter"> </p>
+			</div>
+		
+		<script src="/assets/main.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization&callback=initMap"></script>
+  </body>
+</html>

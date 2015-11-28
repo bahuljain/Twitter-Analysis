@@ -1,0 +1,10 @@
+{
+  "name": "amazon-sdk",
+  "author": "bahul",
+  "dependencies": {
+    "express": "~4.13.3",
+    "socket.io": "~1.3.7",
+    "body-parser": "~1.14.1",
+    "aws-sdk": "*"
+  }
+}

@@ -41,6 +41,7 @@ public class WorkerThread implements Runnable {
 		try {
 			doc = alchemyObj.TextGetTextSentiment(tweet.getString("text"));
 			String sentiment = doc.getElementsByTagName("type").item(0).getTextContent();
+//			String score = doc.getElementsByTagName("score").item(0).getTextContent();
 			return sentiment;
 		} catch (XPathExpressionException | IOException | SAXException | ParserConfigurationException e) {
 			e.printStackTrace();
@@ -64,7 +65,7 @@ public class WorkerThread implements Runnable {
 		Map<String, AttributeValue> item = newItem(id, tweet);
 		PutItemRequest putItemRequest = new PutItemRequest(tablename, item);
 		this.dynamoDB.putItem(putItemRequest);
-		System.out.println("Item added");
+		System.out.println(id + ": Item added");
 	}
 
 	private Map<String, AttributeValue> newItem(String tweet_id, String tweet) {
@@ -108,10 +109,10 @@ public class WorkerThread implements Runnable {
 
 	@Override
 	public void run() {
-		String sentiment = "positive";//getSentiment();
+		String sentiment = getSentiment();
 		if (sentiment != null) {
 			addSentimentToTweet(sentiment);
-//			addToDynamo(this.tweet);
+			addToDynamo(this.tweet);
 			snsPublish(this.tweet.toString());
 		}		
 	}

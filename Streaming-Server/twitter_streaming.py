@@ -59,7 +59,7 @@ class StdOutListener(StreamListener):
                     }
 
                     jsonDump = json.dumps(content)
-                    print jsonDump + '\n'
+                    # print jsonDump + '\n'
                     writeMessage(self.sqs, 'bahul' ,jsonDump)
                     self.counter += 1
         else:
@@ -82,8 +82,7 @@ if __name__ == '__main__':
             twitterStream = Stream(auth, l)
             #This line filter Twitter Streams to capture data by the keywords: 'python', 'javascript', 'ruby'
             twitterStream.filter(track=['movies','sports','music','finance','technology','fashion','science','travel','health','cricket','india', 'love', 'shit'])
-
-            flag = False
+            # flag = False
         except:
-            flag = False
+            # flag = False
             continue

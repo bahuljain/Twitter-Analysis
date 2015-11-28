@@ -44,14 +44,13 @@ public class Consumer {
 
 	private static void deleteBatchMessages(List<Message> messages, String queueUrl, AmazonSQS sqs) {
 		// Delete a message
-		System.out.println("Deleting Messages.\n");
-
 		List<DeleteMessageBatchRequestEntry> entries = new ArrayList<DeleteMessageBatchRequestEntry>();
 		for (Message m : messages) {
 			entries.add(new DeleteMessageBatchRequestEntry(m.getMessageId(), m.getReceiptHandle()));
 		}
 		DeleteMessageBatchRequest deleteMessageBatchRequest = new DeleteMessageBatchRequest(queueUrl, entries);
 		sqs.deleteMessageBatch(deleteMessageBatchRequest);
+		System.out.println("Message Deleted!");
 	}
 	
 	private static void processQueueMessages(AmazonSQS sqs) {
@@ -60,14 +59,14 @@ public class Consumer {
 		String queueUrl = sqs.getQueueUrl(queueName).getQueueUrl();
 
 		// Receive messages
-		int maxMessages = 5;
-
-		while (true) {
-			System.out.println("Receiving messages from MyQueue.\n");
+		int maxMessages = 10;
+		int count = 0;
+		while (count < 55) {
+//			System.out.println("Receiving messages from MyQueue.\n");
 			ReceiveMessageRequest receiveMessageRequest = new ReceiveMessageRequest(queueUrl)
 					.withMaxNumberOfMessages(maxMessages);
 			List<Message> messages = sqs.receiveMessage(receiveMessageRequest).getMessages();
-
+			count += messages.size();
 			if (messages.size() > 0) {
 				ExecutorService executor = Executors.newFixedThreadPool(10);
 				for (Message message : messages) {
@@ -82,7 +81,7 @@ public class Consumer {
 				}
 				
 				try {
-					System.out.println("Attempting to shut down worker now!!");
+//					System.out.println("Attempting to shut down worker now!!");
 					executor.shutdown();
 					executor.awaitTermination(10, TimeUnit.SECONDS);
 				} catch (InterruptedException e) {
@@ -94,10 +93,9 @@ public class Consumer {
 					executor.shutdownNow();
 				}
 				
-				// deleteBatchMessages(messages, queueUrl, sqs);
+				deleteBatchMessages(messages, queueUrl, sqs);
 
 				System.out.println("Processed All Messages");
-				break;
 			} else {
 				System.out.println("chilling!!....");
 				try {
@@ -106,6 +104,7 @@ public class Consumer {
 					e.printStackTrace();
 				}
 			}
+			System.out.println("Number of messages taken from Queue: " + count);
 		}
 	}
 
