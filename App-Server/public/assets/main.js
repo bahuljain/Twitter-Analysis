@@ -1,8 +1,8 @@
 // top level variables
 var mapPoints, map, markers = [], tweetPoints = [];
 
-function loadFilteredMapPoints(keyword){
-	while(mapPoints.length>0){
+function loadFilteredMapPoints(keyword) {
+	while(mapPoints.length > 0) {
 		mapPoints.pop();
 	}
 
@@ -62,10 +62,6 @@ function startListening() {
 			$('#sidebar #counter').text("Total points:" + tweetPoints.length);
 		}
 	});
-	//
-	// socket.on('sns:alert', function (msg) {
-	// 	alert(msg);
-	// });
 }
 
 function addMarker (tweet) {
@@ -88,5 +84,4 @@ $(document).ready(function() {
 	$('#dropdown').change(function(val) {
 		loadFilteredMapPoints($('#dropdown').val())
 	});
-
 });
