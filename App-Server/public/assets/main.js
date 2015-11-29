@@ -75,7 +75,7 @@ function showTrendingTopics (trends) {
 		trends = trends["trends"];
 		$('#sidebar #trending-topics').append("<h4>Top 10 Trending Topics:</h4>");
 		for (var i = 0; i < trends.length; i++) {
-			$('#sidebar #trending-topics').append("<p>"+ trends[i]["name"] +"</p>");
+			$('#sidebar #trending-topics').append("<p>" + trends[i]["name"] + "</p>");
 		}
 	} else {
 		log = trends["trends"]["log"];

@@ -61,7 +61,7 @@ public class Consumer {
 		// Receive messages
 		int maxMessages = 10;
 		int count = 0;
-		while (count < 55) {
+		while (count < 250) {
 //			System.out.println("Receiving messages from MyQueue.\n");
 			ReceiveMessageRequest receiveMessageRequest = new ReceiveMessageRequest(queueUrl)
 					.withMaxNumberOfMessages(maxMessages);
@@ -83,7 +83,7 @@ public class Consumer {
 				try {
 //					System.out.println("Attempting to shut down worker now!!");
 					executor.shutdown();
-					executor.awaitTermination(10, TimeUnit.SECONDS);
+					executor.awaitTermination(30, TimeUnit.SECONDS);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				} finally {
