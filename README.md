@@ -1,6 +1,8 @@
 # Twitter-Analysis
 Fun with Twitter, Amazon AWS, Google Maps and Alchemy APIs
 
+![alt tag](https://raw.github.com/bahuljain/Twitter-Analysis/screenshot.jpg)
+
 A highly distributed application that receives tweets in real-time, performs sentiment analysis on them and displays them on a world map along with other features such as topics trending in different places around the world.
 
 The entire architechture consists of 3 main components:
