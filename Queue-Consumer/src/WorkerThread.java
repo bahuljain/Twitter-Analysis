@@ -26,7 +26,7 @@ public class WorkerThread implements Runnable {
 	private JSONObject tweet;
 	private AmazonDynamoDBClient dynamoDB;
 	private AmazonSNSClient snsClient;
-	private final String apiKey = "add alchemy api key here";
+	private final String apiKey = "3669370d18a4239e2d6f494a46436716db13aa1c";
 	private AWSCredentials credentials = null;
 
 	public WorkerThread(AWSCredentials credentials, JSONObject tweet) {
@@ -100,7 +100,7 @@ public class WorkerThread implements Runnable {
 		this.snsClient.setRegion(Region.getRegion(Regions.US_EAST_1));
 
 		String topicArn = "arn:aws:sns:us-east-1:671774941075:Tweet-Feed";
-	
+
 		PublishRequest publishRequest = new PublishRequest(topicArn, msg);
 		PublishResult publishResult = snsClient.publish(publishRequest);
 
@@ -114,6 +114,6 @@ public class WorkerThread implements Runnable {
 			addSentimentToTweet(sentiment);
 			addToDynamo(this.tweet);
 			snsPublish(this.tweet.toString());
-		}		
+		}
 	}
 }

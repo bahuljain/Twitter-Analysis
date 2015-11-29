@@ -11,7 +11,32 @@ app.use(express.static(__dirname + "/public"));
 // parse application/json
 app.use(bodyParser.json());
 
-var sockets = [];
+var Twitter = require('twitter');
+var client = new Twitter({
+	consumer_key: 'zcyBebO0dPSrBQXPlQlybk7bp',
+	consumer_secret: 'aXjQXYoEGVVF4e0bRXDTnvc5DTsaw1NNpfksrhrPhDUf3ubMV2',
+	access_token_key: '2793739158-pVYEiXZd90qMuXLsULyRfSuSQodVco3RXBXHk2H',
+	access_token_secret: '29pbt0iVYWOTiwCZGTy9xnCu87FdY4TsciSrvdnGEajIE'
+});
+
+function getTrends(woeid) {
+    var params = {id: woeid};
+    client.get('trends/place', params, function(error, tweets, response){
+    	if (!error) {
+			name = [], urls = [];
+			trends = tweets[0];
+			trends["error"] = false;
+			if(curSocket !== undefined) {
+				curSocket.emit("trends:response", trends);
+			}
+        } else {
+          	console.log(error);
+			curSocket.emit("trends:response", {'trends': {'error':true, log:error[0]}})
+        }
+    });
+}
+
+var curSocket = undefined;
 var count = 0;
 app.post('/newTweet', function (request, response) {
 	var body = '';
@@ -26,8 +51,8 @@ app.post('/newTweet', function (request, response) {
 		tweet = JSON.parse(tweet);
 		count += 1;
 		console.log("SNS #" + count + " : New Tweet Received");
-		if (sockets.length > 0) {
-			sockets[sockets.length - 1].emit("tweets:channel", tweet);
+		if (curSocket !== undefined) {
+			curSocket.emit("tweets:channel", tweet);
 		} else {
 			console.log("No socket connection defined");
 		}
@@ -41,7 +66,7 @@ app.post('/newTweet', function (request, response) {
 function loadFromDynamo(socket) {
 	AWS.config.update({
   		region: "us-east-1",
-  		accessKeyId: "add access key id", secretAccessKey: "add secret access key here"
+  		accessKeyId: "AKIAJOMJGPJBNRWN2RNQ", secretAccessKey: "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"
 	});
 	var dynamodb = new AWS.DynamoDB();
 	var params = {
@@ -67,11 +92,16 @@ function loadFromDynamo(socket) {
 
 // beginning socket transmission in response to io.connect() at the client side
 io.on('connection', function(socket) {
-	sockets.push(socket);
+	curSocket = socket;
     console.log("new user connected");
     socket.emit("tweets:connected", { msg: "hello world from server" });
     loadFromDynamo(socket);
+
+	curSocket.on('trend:request', function(msg) {
+		getTrends(msg.woeid);
+	});
 });
+
 
 var port = 3000;
 // start listening

@@ -10,10 +10,10 @@ import boto.sqs
 from boto.sqs.message import Message
 
 #Variables that contains the user credentials to access Twitter API
-access_token = "xxx"
-access_token_secret = "xxx"
-consumer_key = "xxx"
-consumer_secret = "xxx"
+access_token = "563806852-TgZSJkG413GrZ2g0TzRsyGh7lUAluLmrsKTCnKNs"
+access_token_secret = "hqwb3QFb82LKXR10RAAbfEg8HBUMBQMsY8roZ9KySyar5"
+consumer_key = "Tq20eDbLhvBBGgK2jXcp8Faif"
+consumer_secret = "flSsRrcAJQCwgfbpnHbcPBy5bN9YexArVB5pYdHtdC25dbipO6"
 
 keywordList = ['movies','sports','music','finance','technology','fashion','science','travel','health','cricket','india','love','shit']
 supportedLang = ['en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ar']

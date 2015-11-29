@@ -14,16 +14,27 @@
 			#map {
 				position: absolute;
 				height: 100%;
-				width:84%;
+				width:80%;
 			}
 			#sidebar {
 				position: absolute;
-				right: 0;
-				padding: 10px;
-				margin: 10px;
-				border: 0px solid #eee;
+				right: 0px;
+				padding: 5px;
+                margin-left: 10px;
+                margin-right: 10px;
+                margin-top: 5px;
+				border: 5px solid #eee;
 				text-align: center;
 			}
+
+            #heading {
+                margin-top: 10px;
+                margin-bottom: 5px;
+            }
+
+            #trending-topics p {
+                margin: 5px;
+            }
 
 		</style>
   </head>
@@ -32,26 +43,36 @@
 		<div id="map"></div>
 
 		<div id="sidebar">
-				<h5><u>Filter using Keyword from List</u></h5>
-					<select id='dropdown' name='keywords'>
-						<option value='all'>All</option>
-						<option value='movies'>Movies</option>
-						<option value='music'>Music</option>
-						<option value='sports'>Sports</option>
-						<option value='finance'>Finance</option>
-						<option value='technology'>Technology</option>
-						<option value='fashion'>Fashion</option>
-						<option value='science'>Science</option>
-						<option value='travel'>Travel</option>
-						<option value='health'>Health</option>
-						<option value='cricket'>Cricket</option>
-						<option value='india'>India</option>
-					</select>
-				
-				<p id="counter"> </p>
-			</div>
-		
-		<script src="/assets/main.js"></script>
+            <h4 id="heading">Statistics</h4>
+            <div id="counter"> </div>
+            <div id="positive-counter"> </div>
+            <div id="negative-counter"> </div>
+            <div id="neutral-counter"> </div>
+
+            <h4 id="heading">Trends from around the World</h4>
+            <h5 id="heading">Select a place from the list</h5>
+            <select id='dropdown' name='keywords'>
+				<option value='2459115'>New York</option>
+				<option value='615702'>Paris</option>
+				<option value='2295411'>Mumbai</option>
+				<option value='2490383'>Seattle</option>
+				<option value='23424977'>United States</option>
+				<option value='23424848'>India</option>
+				<option value='23424975'>United Kingdom</option>
+				<option value='23424936'>Russia</option>
+				<option value='23424781'>China</option>
+                <option value='23424748'>Australia</option>
+                <option value='23424942'>South Africa</option>
+                <option value='23424853'>Italy</option>
+                <option value='23424768'>Brazil</option>
+                <option value='23424901'>Malaysia</option>
+			</select>
+
+            <div id="trending-topics"> </div>
+
+	</div>
+
+	<script src="/assets/main.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization&callback=initMap"></script>
   </body>
 </html>
