@@ -32,8 +32,8 @@ Once these tweets are received, they are written to a distributed queue, using A
 #### Functionality
 - A batch of 10 tweets are read from the queue.
 - For each message a new worker is spawned. Multiple workers run together using Thread Pool Executors.
-- At each worker, a sentiment analysis is performed which returns one of the three values: 'positive', 'negative', 'neutral'.
-- The tweet along with its sentiment is put in the database. We have used DynamoDB as a distributed database service owing to the simplicity of the schema.
+- At each worker, sentiment analysis is performed on a single tweet which returns one of the three values: 'positive', 'negative', 'neutral'.
+- The tweet along with its sentiment is put in the database. We have used DynamoDB as a distributed database service owing to the simplicity of the schema and its highly availability.
 - Also the tweet is published as a SNS notification on the topic - 'Tweet-Feed'.
 
 ### 3. Application Server
