@@ -13,10 +13,10 @@ app.use(bodyParser.json());
 
 var Twitter = require('twitter');
 var client = new Twitter({
-	consumer_key: 'zcyBebO0dPSrBQXPlQlybk7bp',
-	consumer_secret: 'aXjQXYoEGVVF4e0bRXDTnvc5DTsaw1NNpfksrhrPhDUf3ubMV2',
-	access_token_key: '2793739158-pVYEiXZd90qMuXLsULyRfSuSQodVco3RXBXHk2H',
-	access_token_secret: '29pbt0iVYWOTiwCZGTy9xnCu87FdY4TsciSrvdnGEajIE'
+	consumer_key: 'XXXXXXXXXXXXXXXXXXXXXXXXx',
+	consumer_secret: 'XXXXXXXXXXXXXXXXXXXXXXXXXXX',
+	access_token_key: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+	access_token_secret: 'XXXXXXXXXXXXXXXXXXXXXX'
 });
 
 function getTrends(woeid) {
