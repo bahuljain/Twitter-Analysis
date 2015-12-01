@@ -1,8 +1,8 @@
 # Twitter-Analysis
 ######Fun with Twitter, Amazon AWS, Google Maps and Alchemy APIs 
 by
-Bahul Jain: bkj2111
-Parth Parekh: prp2121
+######Bahul Jain: bkj2111</b>
+######Parth Parekh: prp2121
 
 A highly distributed and scalable application that receives tweets in real-time, performs sentiment analysis on them and displays them on a world map along with other features such as topics trending in different places around the world.
 
