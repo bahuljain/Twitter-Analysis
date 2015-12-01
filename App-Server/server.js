@@ -5,6 +5,8 @@ var bodyParser = require('body-parser');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var SNSClient = require('aws-snsclient');
+
 // setup static content
 app.use(express.static(__dirname + "/public"));
 
@@ -13,22 +15,22 @@ app.use(bodyParser.json());
 
 var Twitter = require('twitter');
 var client = new Twitter({
-	consumer_key: 'XXXXXXXXXXXXXXXXXXXXXXXXx',
-	consumer_secret: 'XXXXXXXXXXXXXXXXXXXXXXXXXXX',
-	access_token_key: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-	access_token_secret: 'XXXXXXXXXXXXXXXXXXXXXX'
+	consumer_key: 'zcyBebO0dPSrBQXPlQlybk7bp',
+	consumer_secret: 'aXjQXYoEGVVF4e0bRXDTnvc5DTsaw1NNpfksrhrPhDUf3ubMV2',
+	access_token_key: '2793739158-pVYEiXZd90qMuXLsULyRfSuSQodVco3RXBXHk2H',
+	access_token_secret: '29pbt0iVYWOTiwCZGTy9xnCu87FdY4TsciSrvdnGEajIE'
 });
 
 function getTrends(woeid) {
     var params = {id: woeid};
     client.get('trends/place', params, function(error, tweets, response){
     	if (!error) {
-			name = [], urls = [];
-			trends = tweets[0];
-			trends["error"] = false;
-			if(curSocket !== undefined) {
-				curSocket.emit("trends:response", trends);
-			}
+		name = [], urls = [];
+		trends = tweets[0];
+		trends["error"] = false;
+		if(curSocket !== undefined) {
+			curSocket.emit("trends:response", trends);
+		}
         } else {
           	console.log(error);
 			curSocket.emit("trends:response", {'trends': {'error':true, log:error[0]}})
@@ -38,35 +40,28 @@ function getTrends(woeid) {
 
 var curSocket = undefined;
 var count = 0;
-app.post('/newTweet', function (request, response) {
-	var body = '';
-
-	request.on('data', function (data) {
-		body += data;
-	});
-
-	request.on('end', function () {
-		postBody = JSON.parse(body);
-		tweet = postBody["Message"]
-		tweet = JSON.parse(tweet);
-		count += 1;
-		console.log("SNS #" + count + " : New Tweet Received");
-		if (curSocket !== undefined) {
-			curSocket.emit("tweets:channel", tweet);
-		} else {
-			console.log("No socket connection defined");
-		}
-	});
-
-	response.status(200);
-	response.send("received");
+var client = SNSClient(function(err, message) {
+    tweet = JSON.parse(message["Message"]);	    
+    count += 1;
+    console.log("SNS #" + count + " : New Tweet Received");
+    if (curSocket !== undefined) {
+    	curSocket.emit("tweets:channel", tweet);
+    } else {
+	console.log("No socket connection defined");
+    }
 });
+
+app.post('/newTweet', function (request, response) {
+    client(request, response);
+});
+
 
 // loading data from dynamo in the beginning
 function loadFromDynamo(socket) {
+	//credentials of bkj2111@columbia.edu account
 	AWS.config.update({
   		region: "us-east-1",
-  		accessKeyId: "xxx", secretAccessKey: "xxx"
+  		accessKeyId: "", secretAccessKey: ""
 	});
 	var dynamodb = new AWS.DynamoDB();
 	var params = {
@@ -79,10 +74,10 @@ function loadFromDynamo(socket) {
     	} else if (data) {
         	console.log("Last scan processed " + data.ScannedCount + " items: ");
         	for (var i = 0; i < data.Items.length; i++ ) {
-				tweet = data.Items[i]["tweet"]["S"];
-				tweet = JSON.parse(tweet);
-				// console.log(tweet["text"]);
-				socket.emit("tweets:channel", tweet);
+			tweet = data.Items[i]["tweet"]["S"];
+			tweet = JSON.parse(tweet);
+			// console.log(tweet["text"]);
+			socket.emit("tweets:channel", tweet);
         	}
     	} else {
         	console.log("*** Finished scan ***");
