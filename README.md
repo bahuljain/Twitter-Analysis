@@ -6,6 +6,9 @@ by<br/>
 
 A highly distributed and scalable application that receives tweets in real-time, performs sentiment analysis on them and displays them on a world map along with other features such as topics trending in different places around the world.
 
+Link to Application: http://default-environment-exdhum3jvi.elasticbeanstalk.com/ <br/>
+Note: This application will be pulled down after it's purpose has been served.
+
 ![alt tag](https://raw.github.com/bahuljain/Twitter-Analysis/master/screenshot.jpg)
 
 The entire architechture consists of 3 main components:
@@ -59,7 +62,3 @@ Once these tweets are received, they are written to a distributed queue, using A
 - Also each tweet has a marker associated with it, the color of the marker represents the sentiment of the tweet (green - positive, red - negative, blue - neutral).
 - A total count of all the tweets, tweets with positive sentiment, negative sentiment and neutral sentiment is also shown
 - Lastly a drop down is provided with a list of places. Selecting any place shows the top ten trending topics in that area (Back-End call is made via sockets).
-
-Link to Application:<br/>
-http://default-environment-exdhum3jvi.elasticbeanstalk.com/ <br/>
-Note: This application will be pulled down after it's purpose has been served.
